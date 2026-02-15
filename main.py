@@ -18,6 +18,10 @@ PORT = int(os.getenv("PORT", 3000))
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:3000")
 
+@app.get("/")
+def read_root():
+    return {"status": "Backend running successfully", "docs": "/docs"}
+
 # ================== CORS ==================
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
 
