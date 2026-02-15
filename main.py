@@ -15,7 +15,7 @@ load_dotenv()
 app = FastAPI()
 
 PORT = int(os.getenv("PORT", 3000))
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:3000")
 
 @app.get("/")
