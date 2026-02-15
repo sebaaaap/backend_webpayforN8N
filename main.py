@@ -18,6 +18,8 @@ PORT = int(os.getenv("PORT", 3000))
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:3000")
 
+print(f"DEBUG: FRONTEND_URL loaded: {FRONTEND_URL}")
+
 @app.get("/")
 def read_root():
     return {"status": "Backend running successfully", "docs": "/docs"}
