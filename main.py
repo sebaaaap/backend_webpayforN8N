@@ -49,6 +49,7 @@ class ReservationPaymentRequest(BaseModel):
     end_time: str    # ISO format
     amount: int
     service_name: str
+    phone: Optional[str] = None # Nuevo campo para WhatsApp
 
 # ================== MERCADOPAGO ==================
 mp_sdk = mercadopago.SDK(
@@ -302,8 +303,10 @@ def confirm_payment(data: ConfirmPaymentRequest):
                         "startTime": reserva["start_time"],
                         "endTime": reserva["end_time"],
                         "service": reserva["service_name"],
-                        "amount": transactions[token]["amount"]
-                    })
+                        "amount": transactions[token]["amount"],
+                        "from_number": reserva.get("phone", ""), # Devolvemos el teléfono para WA
+                        "payment_details": result # Enviamos todo lo que Transbank nos dio
+                    }, timeout=10)
                     print(f"Notificación enviada a n8n para reserva: {reserva['name']}")
                 except Exception as e:
                     print(f"Error avisando a n8n: {e}")
