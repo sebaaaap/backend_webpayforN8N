@@ -248,6 +248,16 @@ def confirm_payment(data: ConfirmPaymentRequest):
     Confirma el pago con Webpay y notifica a n8n si es una reserva.
     """
     token = data.token
+
+    # 1. Si ya tenemos el token en nuestro diccionario local y el estado NO es pendiente,
+    # significa que ya lo procesamos (posible doble clic o re-render).
+    if token in transactions and transactions[token].get("status") != "pending":
+        return {
+            "success": transactions[token].get("status") == "AUTHORIZED",
+            "status": transactions[token].get("status"),
+            "details": transactions[token].get("details", {})
+        }
+
     url = f"{WEBPAY_CONFIG['base_url']}/rswebpaytransaction/api/webpay/v1.2/transactions/{token}"
     headers = {
         "Tbk-Api-Key-Id": WEBPAY_CONFIG["commerce_code"],
