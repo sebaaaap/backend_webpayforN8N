@@ -207,9 +207,11 @@ N8N_WEBHOOK_URL = os.getenv("N8N_CONFIRMATION_WEBHOOK", "https://tu-ngrok.ngrok-
 
 @app.post("/api/reserva/crear-pago")
 def crear_pago_reserva(data: ReservationPaymentRequest):
-    """
-    Este endpoint es llamado por n8n o el frontend para iniciar un pago de reserva.
-    """
+    print("-----------------------------------------")
+    print(f"RECIBIENDO PETICIÓN DE N8N PARA: {data.name}")
+    print(f"DATOS: {data.dict()}")
+    print("-----------------------------------------")
+
     buy_order = f"RES{int(time.time())}"
     session_id = f"SESS{int(time.time())}"
     return_url = f"{FRONTEND_URL}/payment-result"
@@ -232,6 +234,7 @@ def crear_pago_reserva(data: ReservationPaymentRequest):
     response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code != 200:
+        print(f"ERROR TRANSBANK: {response.text}")
         raise HTTPException(status_code=response.status_code, detail=f"Error con Transbank: {response.text}")
 
     resp_data = response.json()
@@ -245,9 +248,13 @@ def crear_pago_reserva(data: ReservationPaymentRequest):
         "created_at": datetime.utcnow()
     }
 
+    # CONSTRUIMOS EL LINK FINAL AQUÍ PARA EL BOT
+    link_final = f"{resp_data['url']}?token_ws={resp_data['token']}"
+    print(f"LINK GENERADO CON ÉXITO: {link_final}")
+
     return {
         "success": True,
-        "payment_url": resp_data["url"],
+        "payment_url": link_final,
         "token": resp_data["token"]
     }
 
