@@ -23,9 +23,13 @@ def read_root():
     return {"status": "Backend running successfully", "docs": "/docs"}
 
 # ================== CORS ==================
-# Obtenemos los orígenes, eliminamos espacios y filtramos vacíos
-raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-ALLOWED_ORIGINS = [o.strip() for o in raw_origins.replace("\n", ",").split(",") if o.strip()]
+raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+if raw_origins == "*" or not raw_origins:
+    ALLOWED_ORIGINS = ["*"]
+else:
+    ALLOWED_ORIGINS = [o.strip() for o in raw_origins.replace("\n", ",").split(",") if o.strip()]
+
+print(f"DEBUG: ALLOWED_ORIGINS loaded: {ALLOWED_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
